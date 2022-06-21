@@ -12,17 +12,16 @@ class OnboardingContainerVC: UIViewController {
 
     let pageViewController: UIPageViewController
     var pages = [UIViewController]()
-    var currentVC:UIViewController {
-        didSet{
-            
-        }
-    }
+    var currentVC:UIViewController
+    let closeButton = UIButton(type: .system)
+        
+    
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         self.pageViewController = UIPageViewController(transitionStyle: .scroll, navigationOrientation: .horizontal)
-        let page1 = ViewController1()
-        let page2 = ViewController2()
-        let page3 = ViewController3()
+        let page1 = OnBoardingVC(imageName: "bank", descLabel: "aıdsjal adj asd kajsd kjahdj habsjhdb ajhsdb ajhsbd ajbdh")
+        let page2 = OnBoardingVC(imageName: "money", descLabel: "ajdsasd ahd jahsdj hahjdh ajhd jahsdh ahsbd habsd habsd hab sdh bahsd bahsdb h")
+        let page3 = OnBoardingVC(imageName: "transfer", descLabel: "aıdja ajd ahd jasdj abhdb ahsdb ahsbd ahbd hasbd ")
         pages.append(page1)
         pages.append(page2)
         pages.append(page3)
@@ -35,7 +34,20 @@ class OnboardingContainerVC: UIViewController {
     }
     
     override func viewDidLoad() {
-        view.backgroundColor = .systemPurple
+        
+        setup()
+        style()
+        layout()
+        
+        
+        
+        
+        
+    }
+    
+    private func setup() {
+        
+        view.backgroundColor = .systemBlue
         addChild(pageViewController)
         view.addSubview(pageViewController.view)
         pageViewController.didMove(toParent: self)
@@ -51,6 +63,27 @@ class OnboardingContainerVC: UIViewController {
         
         pageViewController.setViewControllers([pages.first!], direction: .forward, animated: false)
         currentVC = pages.first!
+        
+    }
+    
+    private func style() {
+        
+        closeButton.translatesAutoresizingMaskIntoConstraints = false
+        closeButton.setTitle("Close", for: [])
+        closeButton.addTarget(self, action: #selector(closeTapped), for: .primaryActionTriggered)
+        view.addSubview(closeButton)
+        
+    }
+    
+    private func layout() {
+        
+        closeButton.snp.makeConstraints { make in
+            make.top.equalTo(view.safeAreaLayoutGuide)
+            make.left.equalToSuperview().offset(8)
+            
+        }
+        
+        
     }
 
     
@@ -63,23 +96,23 @@ extension OnboardingContainerVC:UIPageViewControllerDataSource {
     
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
         
-        return getNextController(from: viewController)
+        return getNextController(viewController: viewController)
     }
     
     
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
         
-        return getPreviousController(from: viewController)
+        return getPreviousController(viewController: viewController)
     }
     
-    private func getPreviousController(from viewController: UIViewController) -> UIViewController? {
+    private func getPreviousController(viewController: UIViewController) -> UIViewController? {
         guard let index = pages.firstIndex(of: viewController), index - 1 >= 0 else { return nil }
         
         currentVC = pages[index - 1]
         return currentVC
     }
 
-    private func getNextController(from viewController:UIViewController) -> UIViewController? {
+    private func getNextController(viewController:UIViewController) -> UIViewController? {
         guard let index = pages.firstIndex(of: viewController), index + 1 < pages.count else { return nil }
         currentVC = pages[index + 1]
         return currentVC
@@ -109,5 +142,12 @@ class ViewController2 : UIViewController {
 class ViewController3 : UIViewController {
     override func viewDidLoad() {
         view.backgroundColor = .systemGreen
+    }
+}
+
+
+extension OnboardingContainerVC {
+    @objc func closeTapped (_ sender:UIButton) {
+        
     }
 }
