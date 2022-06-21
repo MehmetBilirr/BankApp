@@ -9,8 +9,13 @@ import UIKit
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
+    
+    
+    
+    
 
-
+    let loginViewController = LoginViewController()
+    let onboardingVC = OnboardingContainerVC()
     var window: UIWindow?
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
@@ -18,8 +23,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.makeKeyAndVisible()
         window?.backgroundColor = .systemBackground
+        loginViewController.delegate = self
+        onboardingVC.delegate = self
+        
+//        window?.rootViewController = loginViewController
 //        window?.rootViewController = LoginViewController()
-        window?.rootViewController = OnboardingContainerVC()
+        window?.rootViewController = onboardingVC
         
         
         return true
@@ -27,5 +36,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
    
 
+}
+
+extension AppDelegate: LoginViewControllerDelegate {
+    func didLogin() {
+        print("Did login")
+    }
+    
+    
+    
+}
+
+extension AppDelegate : OnboardingContainerVCDelegate {
+    func didFinishOnboarding() {
+        print("did on boarding")
+    }
+    
+    
 }
 

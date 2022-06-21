@@ -8,6 +8,11 @@
 import UIKit
 import SnapKit
 
+protocol LoginViewControllerDelegate: AnyObject {
+    
+    func didLogin()
+}
+
 final class LoginViewController: UIViewController {
 
     
@@ -17,6 +22,7 @@ final class LoginViewController: UIViewController {
     private let descLbl : UILabel = UILabel()
     private let stackView : UIStackView = UIStackView()
     let errorMessageLabel = UILabel()
+    weak var delegate:LoginViewControllerDelegate?
     var username:String? {
         return loginView.usernameTextField.text
     }
@@ -133,6 +139,7 @@ extension LoginViewController {
         
         if username == "Mehmet" && password == "Welcome" {
             signInButton.configuration?.showsActivityIndicator = true
+            delegate?.didLogin()
         }else {
             configureView(withMessage: "Incorrect username / password")
         }

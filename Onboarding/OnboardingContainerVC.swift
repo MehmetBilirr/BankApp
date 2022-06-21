@@ -8,12 +8,30 @@
 import UIKit
 import SnapKit
 
+protocol OnboardingContainerVCDelegate:AnyObject{
+    func didFinishOnboarding()
+}
+
 class OnboardingContainerVC: UIViewController {
 
     let pageViewController: UIPageViewController
     var pages = [UIViewController]()
-    var currentVC:UIViewController
+    
     let closeButton = UIButton(type: .system)
+    let backButton = UIButton(type: .system)
+    let nextButton = UIButton(type: .system)
+    let doneButton = UIButton(type: .system)
+    weak var delegate: OnboardingContainerVCDelegate?
+    var currentVC:UIViewController {
+        didSet {
+            guard let index = pages.firstIndex(of: currentVC) else {return}
+            nextButton.isHidden = index == pages.count - 1
+            backButton.isHidden = index == 0
+            doneButton.isHidden = !(index == pages.count - 1)
+        }
+    }
+    
+    
         
     
     
@@ -61,6 +79,8 @@ class OnboardingContainerVC: UIViewController {
             make.bottom.equalTo(pageViewController.view)
         }
         
+        
+        
         pageViewController.setViewControllers([pages.first!], direction: .forward, animated: false)
         currentVC = pages.first!
         
@@ -70,8 +90,23 @@ class OnboardingContainerVC: UIViewController {
         
         closeButton.translatesAutoresizingMaskIntoConstraints = false
         closeButton.setTitle("Close", for: [])
-        closeButton.addTarget(self, action: #selector(closeTapped), for: .primaryActionTriggered)
+        closeButton.addTarget(self, action: #selector(closeTapped(_:)), for: .primaryActionTriggered)
+        
+        nextButton.translatesAutoresizingMaskIntoConstraints = false
+        nextButton.setTitle("Next", for: [])
+        nextButton.addTarget(self, action: #selector(nextTapped(_:)), for: .primaryActionTriggered)
+        
+        backButton.translatesAutoresizingMaskIntoConstraints = false
+        backButton.setTitle("Back", for: [])
+        backButton.addTarget(self, action: #selector(backTapped(_:)), for: .primaryActionTriggered)
+        
+        doneButton.translatesAutoresizingMaskIntoConstraints = false
+        doneButton.setTitle("Done", for: [])
+        doneButton.addTarget(self, action: #selector(doneTapped(_:)), for: .primaryActionTriggered)
         view.addSubview(closeButton)
+        view.addSubview(nextButton)
+        view.addSubview(backButton)
+        view.addSubview(doneButton)
         
     }
     
@@ -82,6 +117,26 @@ class OnboardingContainerVC: UIViewController {
             make.left.equalToSuperview().offset(8)
             
         }
+        
+        nextButton.snp.makeConstraints { make in
+            make.bottom.equalToSuperview().offset(-60)
+            make.right.equalToSuperview().offset(-10)
+            
+        }
+        
+        doneButton.snp.makeConstraints { make in
+            make.bottom.equalToSuperview().offset(-60)
+            make.right.equalToSuperview().offset(-10)
+            
+        }
+        
+        backButton.snp.makeConstraints { make in
+            make.bottom.equalToSuperview().offset(-60)
+            make.left.equalToSuperview().offset(10)
+        }
+        
+        
+        
         
         
     }
@@ -149,5 +204,24 @@ class ViewController3 : UIViewController {
 extension OnboardingContainerVC {
     @objc func closeTapped (_ sender:UIButton) {
         
+        delegate?.didFinishOnboarding()
+    }
+    
+    @objc func nextTapped(_ sender:UIButton) {
+        
+        guard let nextVC = getNextController(viewController: currentVC) else {return}
+        pageViewController.setViewControllers([nextVC], direction: .forward, animated: true)
+        
+    }
+    
+    @objc func backTapped(_ sender:UIButton) {
+        guard let nextVC = getPreviousController(viewController: currentVC) else {return}
+        pageViewController.setViewControllers([nextVC], direction: .reverse, animated: true)
+        
+    }
+    
+    @objc func doneTapped(_ sender:UIButton) {
+        
+        delegate?.didFinishOnboarding()
     }
 }
