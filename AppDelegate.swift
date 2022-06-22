@@ -7,16 +7,15 @@
 
 import UIKit
 
+let appColor:UIColor = .systemTeal
+
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
     
-    
-    
-    
-
     let loginViewController = LoginViewController()
     let onboardingVC = OnboardingContainerVC()
     let dummyVC = DummyVC()
+    let mainVC = MainVC()
     
     var window: UIWindow?
     
@@ -33,13 +32,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //        window?.rootViewController = LoginViewController()
         
         
-        if LocalState.hasLoggedin {
-            window?.rootViewController = dummyVC
-            
-        }else{
-            window?.rootViewController = loginViewController
-        }
+//        if LocalState.hasLoggedin {
+//            window?.rootViewController = dummyVC
+//
+//        }else{
+//            window?.rootViewController = loginViewController
+//        }
        
+        window?.rootViewController = mainVC
         
             
         
