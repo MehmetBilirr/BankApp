@@ -17,7 +17,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     let loginViewController = LoginViewController()
     let onboardingVC = OnboardingContainerVC()
     let dummyVC = DummyVC()
-    var hasOnboarded : Bool?
+    
     var window: UIWindow?
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
@@ -31,7 +31,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
 //        window?.rootViewController = loginViewController
 //        window?.rootViewController = LoginViewController()
-        window?.rootViewController = loginViewController
+        
+        
+        if LocalState.hasLoggedin {
+            window?.rootViewController = dummyVC
+            
+        }else{
+            window?.rootViewController = loginViewController
+        }
+       
+        
+            
+        
+        
         
         
         return true
@@ -55,6 +67,9 @@ extension AppDelegate {
 
 extension AppDelegate: LoginViewControllerDelegate {
     func didLogin() {
+        
+        LocalState.hasLoggedin = true
+        
         
         if LocalState.hasOnboarded {
             setRootViewController(dummyVC)
@@ -85,6 +100,8 @@ extension AppDelegate : OnboardingContainerVCDelegate {
 
 extension AppDelegate:LogoutViewConttollerDelegate {
     func didLogout() {
+        LocalState.hasLoggedin = false
+        
         setRootViewController(loginViewController)
     }
     

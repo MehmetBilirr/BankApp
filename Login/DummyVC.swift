@@ -26,6 +26,8 @@ class DummyVC: UIViewController {
         
         style()
         layout()
+        print(LocalState.hasLoggedin)
+
     }
     
     

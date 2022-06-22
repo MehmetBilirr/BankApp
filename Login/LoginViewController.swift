@@ -33,6 +33,8 @@ final class LoginViewController: UIViewController {
         super.viewDidLoad()
         style()
         layout()
+        print(LocalState.hasLoggedin)
+        
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -132,7 +134,7 @@ extension LoginViewController {
     @objc func signInTapped(sender:UIButton) {
         
         errorMessageLabel.isHidden = true
-        login()
+        delegate?.didLogin()
         
     }
     private func login() {
@@ -145,7 +147,7 @@ extension LoginViewController {
         
         if username == "Mehmet" && password == "Welcome" {
             signInButton.configuration?.showsActivityIndicator = true
-            delegate?.didLogin()
+            
         }else {
             configureView(withMessage: "Incorrect username / password")
         }
