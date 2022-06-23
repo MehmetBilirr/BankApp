@@ -1,0 +1,117 @@
+//
+//  AccountSummaryTableViewCell.swift
+//  BankApp
+//
+//  Created by Mehmet Bilir on 23.06.2022.
+//
+
+import UIKit
+import SnapKit
+
+class AccountSummaryTableViewCell: UITableViewCell {
+    
+    static let identifier = "AccountSummaryTableViewCell"
+    static let rowHeight : CGFloat = 100
+    let typeLabel = UILabel()
+    let nameLabel = UILabel()
+    let dividerView = UIView()
+    let balanceLabel = UILabel()
+    let balanceAmountLabel = UILabel()
+    let chevronImageView = UIImageView()
+    let stackView = UIStackView()
+    
+    
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        setup()
+        layout()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    
+
+}
+
+extension AccountSummaryTableViewCell {
+    
+    private func setup(){
+        typeLabel.translatesAutoresizingMaskIntoConstraints = false
+        typeLabel.text = "Account type"
+        typeLabel.font = UIFont.preferredFont(forTextStyle: .caption1)
+        typeLabel.adjustsFontForContentSizeCategory = true
+        contentView.addSubview(typeLabel)
+        
+        dividerView.backgroundColor = appColor
+        dividerView.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(dividerView)
+        
+        nameLabel.translatesAutoresizingMaskIntoConstraints = false
+        nameLabel.font = UIFont.preferredFont(forTextStyle: .body)
+        nameLabel.text = "Account name"
+        contentView.addSubview(nameLabel)
+        
+        balanceLabel.translatesAutoresizingMaskIntoConstraints = false
+        balanceLabel.font = UIFont.preferredFont(forTextStyle: .body)
+        balanceLabel.text = "Some balance"
+        
+        balanceAmountLabel.translatesAutoresizingMaskIntoConstraints = false
+        balanceAmountLabel.font = UIFont.preferredFont(forTextStyle: .body)
+        balanceAmountLabel.text = "$929,466.63"
+        
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.axis = .vertical
+        stackView.addArrangedSubview(balanceLabel)
+        stackView.addArrangedSubview(balanceAmountLabel)
+        contentView.addSubview(stackView)
+        
+        
+        chevronImageView.translatesAutoresizingMaskIntoConstraints = false
+        let chevronImage = UIImage(systemName: "chevron.right")!.withTintColor(appColor, renderingMode: .alwaysOriginal)
+        chevronImageView.image = chevronImage
+        contentView.addSubview(chevronImageView)
+        
+        
+        
+        
+        
+        
+    }
+    
+    private func layout(){
+        
+        
+        
+        typeLabel.snp.makeConstraints { make in
+            make.top.equalTo(contentView).offset(5)
+            make.left.equalTo(contentView).offset(5)
+            
+        }
+        
+        dividerView.snp.makeConstraints { make in
+            make.top.equalTo(typeLabel.snp.bottom).offset(5)
+            make.left.equalTo(typeLabel.snp.left)
+            make.right.equalTo(typeLabel.snp.right).offset(5)
+            make.height.equalTo(2)
+        }
+        
+        nameLabel.snp.makeConstraints { make in
+            make.top.equalTo(dividerView.snp.bottom).offset(20)
+            make.left.equalTo(typeLabel.snp.left)
+        }
+        
+        stackView.snp.makeConstraints { make in
+            make.top.equalTo(dividerView.snp.bottom).offset(10)
+            make.right.equalTo(contentView).offset(-30)
+            
+        }
+        
+        chevronImageView.snp.makeConstraints { make in
+            make.top.equalTo(dividerView.snp.bottom).offset(20)
+            make.left.equalTo(stackView.snp.right).offset(10)
+        }
+        
+    }
+}
