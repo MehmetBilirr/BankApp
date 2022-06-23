@@ -60,14 +60,7 @@ class MainVC: UITabBarController {
 }
 
 
-class AccountSummaryVC:UIViewController {
-    
-    override func viewDidLoad() {
-        view.backgroundColor = .systemGreen
-        
-    }
-    
-}
+
 
 
 

@@ -39,7 +39,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //            window?.rootViewController = loginViewController
 //        }
        
-        window?.rootViewController = mainVC
+//        window?.rootViewController = mainVC
+        window?.rootViewController = AccountSummaryVC()
         
             
         
