@@ -10,8 +10,31 @@ import SnapKit
 
 class AccountSummaryTableViewCell: UITableViewCell {
     
+    enum AccountType:String {
+        case Banking
+        case CreditCard
+        case Investment
+    }
+    enum BalanceType:String {
+        
+        case currentBalance = "Current Balance"
+        case value = "Value"
+        
+        
+    }
+    
+    struct ViewModel {
+        let accountType:AccountType
+        let accountName:String
+        let balance:Decimal
+        
+        var balanceAsAttributedString : NSAttributedString {
+            return CurrencyFormatter().makeAttributedCurrency(balance)
+        }
+    }
+    
     static let identifier = "AccountSummaryTableViewCell"
-    static let rowHeight : CGFloat = 100
+    static let rowHeight : CGFloat = 112
     let typeLabel = UILabel()
     let nameLabel = UILabel()
     let dividerView = UIView()
@@ -59,7 +82,7 @@ extension AccountSummaryTableViewCell {
         
         balanceAmountLabel.translatesAutoresizingMaskIntoConstraints = false
         balanceAmountLabel.font = UIFont.preferredFont(forTextStyle: .body)
-        balanceAmountLabel.text = "$929,466.63"
+        balanceAmountLabel.attributedText = CurrencyFormatter().makeAttributedCurrency(123323.00)
         
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .vertical
@@ -114,4 +137,29 @@ extension AccountSummaryTableViewCell {
         }
         
     }
+    
+    
+    
+    func configure(vm:ViewModel) {
+        
+        typeLabel.text = vm.accountType.rawValue
+        nameLabel.text = vm.accountName
+        balanceLabel.attributedText = vm.balanceAsAttributedString
+        switch vm.accountType {
+            
+        case .Banking:
+            dividerView.backgroundColor = appColor
+            balanceLabel.text = BalanceType.currentBalance.rawValue
+            
+        case .CreditCard:
+            dividerView.backgroundColor = .systemOrange
+            balanceLabel.text = BalanceType.currentBalance.rawValue
+        case .Investment:
+            dividerView.backgroundColor = .systemPurple
+            balanceLabel.text = BalanceType.value.rawValue
+        }
+    }
 }
+
+
+
