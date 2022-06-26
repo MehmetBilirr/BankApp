@@ -64,6 +64,7 @@ extension AccountSummaryVC {
         tableView.register(AccountSummaryTableViewCell.self, forCellReuseIdentifier: AccountSummaryTableViewCell.identifier)
         tableView.rowHeight = AccountSummaryTableViewCell.rowHeight
         tableView.tableFooterView = UIView()
+        tableView.backgroundColor = appColor
         
         tableView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(tableView)

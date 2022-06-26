@@ -82,7 +82,7 @@ extension AccountSummaryTableViewCell {
         
         balanceAmountLabel.translatesAutoresizingMaskIntoConstraints = false
         balanceAmountLabel.font = UIFont.preferredFont(forTextStyle: .body)
-        balanceAmountLabel.attributedText = CurrencyFormatter().makeAttributedCurrency(123323.00)
+        balanceAmountLabel.attributedText = CurrencyFormatter().makeAttributedCurrency(92993.23)
         
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .vertical
@@ -144,7 +144,7 @@ extension AccountSummaryTableViewCell {
         
         typeLabel.text = vm.accountType.rawValue
         nameLabel.text = vm.accountName
-        balanceLabel.attributedText = vm.balanceAsAttributedString
+        balanceAmountLabel.attributedText = vm.balanceAsAttributedString
         switch vm.accountType {
             
         case .Banking:
@@ -159,6 +159,8 @@ extension AccountSummaryTableViewCell {
             balanceLabel.text = BalanceType.value.rawValue
         }
     }
+    
+    
 }
 
 

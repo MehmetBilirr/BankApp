@@ -14,7 +14,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     let loginViewController = LoginViewController()
     let onboardingVC = OnboardingContainerVC()
-    let dummyVC = DummyVC()
+    
     let mainVC = MainVC()
     
     var window: UIWindow?
@@ -26,21 +26,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window?.backgroundColor = .systemBackground
         loginViewController.delegate = self
         onboardingVC.delegate = self
-        dummyVC.delegate = self
+        let vc = mainVC
+        vc.setStatusBar()
+        UINavigationBar.appearance().isTranslucent = false
+        UINavigationBar.appearance().backgroundColor = appColor
+        window?.rootViewController = vc
         
-//        window?.rootViewController = loginViewController
-//        window?.rootViewController = LoginViewController()
+
         
-        
-//        if LocalState.hasLoggedin {
-//            window?.rootViewController = dummyVC
-//
-//        }else{
-//            window?.rootViewController = loginViewController
-//        }
-       
-//        window?.rootViewController = mainVC
-        window?.rootViewController = AccountSummaryVC()
         
             
         
@@ -73,7 +66,7 @@ extension AppDelegate: LoginViewControllerDelegate {
         
         
         if LocalState.hasOnboarded {
-            setRootViewController(dummyVC)
+            setRootViewController(mainVC)
         }else {
             setRootViewController(onboardingVC)
         }
@@ -93,7 +86,7 @@ extension AppDelegate : OnboardingContainerVCDelegate {
         
         
         
-        setRootViewController(dummyVC)
+        setRootViewController(mainVC)
     }
     
     
