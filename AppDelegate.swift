@@ -26,18 +26,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window?.backgroundColor = .systemBackground
         loginViewController.delegate = self
         onboardingVC.delegate = self
-        let vc = mainVC
-        vc.setStatusBar()
-        UINavigationBar.appearance().isTranslucent = false
-        UINavigationBar.appearance().backgroundColor = appColor
-        window?.rootViewController = vc
         
-
-        
-        
-            
-        
-        
+        prepMainView()
+        registerForNotifications()
         
         
         return true
@@ -56,6 +47,24 @@ extension AppDelegate {
         window.rootViewController = vc
         window.makeKeyAndVisible()
         UIView.transition(with: window, duration: 1, options: .transitionCrossDissolve, animations: nil, completion: nil)
+    }
+    
+    private func prepMainView(){
+        
+        if LocalState.hasLoggedin {
+            let vc = mainVC
+            vc.setStatusBar()
+            UINavigationBar.appearance().isTranslucent = false
+            UINavigationBar.appearance().backgroundColor = appColor
+            window?.rootViewController = vc
+        }else {
+            window?.rootViewController = loginViewController
+        }
+        
+    }
+    
+    private func registerForNotifications(){
+        NotificationCenter.default.addObserver(self, selector: #selector(didLogout), name: .logout, object: nil)
     }
 }
 
@@ -93,10 +102,12 @@ extension AppDelegate : OnboardingContainerVCDelegate {
 }
 
 extension AppDelegate:LogoutViewConttollerDelegate {
-    func didLogout() {
+    @objc func didLogout() {
+        
         LocalState.hasLoggedin = false
         
         setRootViewController(loginViewController)
+        
     }
     
     

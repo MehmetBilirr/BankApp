@@ -11,10 +11,21 @@ import SnapKit
 class AccountSummaryVC: UIViewController {
     var accounts: [AccountSummaryTableViewCell.ViewModel] = []
     var tableView = UITableView()
+    lazy var logoutBarButtonItem :UIBarButtonItem = {
+        let barButtonItem = UIBarButtonItem(title: "Logout", style: .plain, target: self, action: #selector(logoutTapped(_:)))
+        barButtonItem.tintColor = .label
+        return barButtonItem
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         setup()
+        setupNavigationBar()
+    }
+    
+    func setupNavigationBar(){
+        navigationItem.rightBarButtonItem = logoutBarButtonItem
     }
     
 
@@ -100,5 +111,15 @@ extension AccountSummaryVC:UITableViewDelegate,UITableViewDataSource {
         return cell
     }
     
+    
+}
+
+extension AccountSummaryVC {
+    
+    @objc func logoutTapped(_ sender:UIButton) {
+        
+        NotificationCenter.default.post(name: .logout, object: nil)
+        
+    }
     
 }
