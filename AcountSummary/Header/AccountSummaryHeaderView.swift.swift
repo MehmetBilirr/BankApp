@@ -10,6 +10,7 @@ import SnapKit
 
 class AccountSummaryHeaderView:UIView {
     @IBOutlet var contentView: UIView!
+    let shakeyBellView = ShakeyBellView()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -33,6 +34,7 @@ class AccountSummaryHeaderView:UIView {
     private func commonInit() {
         let bundle = Bundle(for: AccountSummaryVC.self)
         bundle.loadNibNamed("AccountSummaryHeaderView", owner: self)
+        contentView.translatesAutoresizingMaskIntoConstraints = false
         addSubview(contentView)
         contentView.backgroundColor = appColor
         
@@ -41,6 +43,17 @@ class AccountSummaryHeaderView:UIView {
             make.bottom.equalToSuperview()
             make.left.equalToSuperview()
             make.right.equalToSuperview()
+        }
+        setupShakeyBell()
+    }
+    
+    private func setupShakeyBell(){
+        shakeyBellView.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(shakeyBellView)
+        
+        shakeyBellView.snp.makeConstraints { make in
+            make.right.equalToSuperview().offset(-5)
+            make.bottom.equalToSuperview().offset(-5)
         }
     }
 }

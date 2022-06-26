@@ -41,6 +41,10 @@ final class LoginViewController: UIViewController {
         super.viewDidDisappear(animated)
         signInButton.configuration?.showsActivityIndicator = false
     }
+    override func viewDidAppear(_ animated: Bool) {
+        animate()
+        
+    }
 
 
 }
@@ -134,7 +138,7 @@ extension LoginViewController {
     @objc func signInTapped(sender:UIButton) {
         
         errorMessageLabel.isHidden = true
-        delegate?.didLogin()
+        login()
         
     }
     private func login() {
@@ -142,11 +146,12 @@ extension LoginViewController {
         guard let username = username, let password = password else {return}
         
         if username.isEmpty || password.isEmpty {
-            configureView(withMessage: "Ueername / password cannot be empty")
+            configureView(withMessage: "Username / password cannot be empty")
         }
         
-        if username == "Mehmet" && password == "Welcome" {
+        if username == "" && password == "" {
             signInButton.configuration?.showsActivityIndicator = true
+            delegate?.didLogin()
             
         }else {
             configureView(withMessage: "Incorrect username / password")
@@ -157,7 +162,40 @@ extension LoginViewController {
     private func configureView(withMessage message : String) {
         errorMessageLabel.isHidden = false
         errorMessageLabel.text = message
+        shakeButton(signInButton)
     }
     
 
+}
+
+extension LoginViewController {
+    private func animate() {
+        
+        UIView.animate(withDuration: 0) {
+            self.bankLbl.transform = CGAffineTransform(translationX: -500 , y: 0 )
+            self.descLbl.transform = CGAffineTransform(translationX: -500, y: 0)
+        } completion: { (true) in
+            UIView.animate(withDuration: 1) {
+                self.bankLbl.transform = CGAffineTransform(translationX: 0, y: 0)
+            } completion: { (true) in
+                
+                UIView.animate(withDuration: 1) {
+                    self.descLbl.transform = CGAffineTransform(translationX: 0, y: 0)
+                }
+
+            }
+
+        }
+
+    }
+    
+    private func shakeButton(_ sender :UIButton ) {
+        let animation = CABasicAnimation(keyPath: "position")
+        animation.duration = 0.07
+        animation.repeatCount = 3
+        animation.autoreverses = true
+        animation.fromValue = NSValue(cgPoint: CGPoint(x: sender.center.x - 10, y: sender.center.y))
+        animation.toValue = NSValue(cgPoint: CGPoint(x: sender.center.x + 10, y: sender.center.y))
+        sender.layer.add(animation, forKey: "position")
+    }
 }
