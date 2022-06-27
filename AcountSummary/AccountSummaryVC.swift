@@ -11,6 +11,7 @@ import SnapKit
 class AccountSummaryVC: UIViewController {
     
     var profile:Profile?
+    var accounts:[Account] = []
     var headerViewModel = AccountSummaryHeaderView.ViewModel(welcomeMessage: "Welcome", name: "", date: Date())
     var accountCellViewModels: [AccountSummaryTableViewCell.ViewModel] = []
     var tableView = UITableView()
@@ -40,33 +41,6 @@ class AccountSummaryVC: UIViewController {
 
 extension AccountSummaryVC {
     
-    private func fetchAccounts() {
-        let savings = AccountSummaryTableViewCell.ViewModel(accountType: .Banking,
-                                                            accountName: "Basic Savings",
-                                                            balance: 929466.23)
-        let chequing = AccountSummaryTableViewCell.ViewModel(accountType: .Banking,
-                                                             accountName: "No-Fee All-In Chequing",
-                                                             balance: 17562.44)
-        let visa = AccountSummaryTableViewCell.ViewModel(accountType: .CreditCard,
-                                                         accountName: "Visa Avion Card",
-                                                         balance: 412.83)
-        let masterCard = AccountSummaryTableViewCell.ViewModel(accountType: .CreditCard,
-                                                               accountName: "Student Mastercard",
-                                                               balance: 50.83)
-        let investment1 = AccountSummaryTableViewCell.ViewModel(accountType: .Investment,
-                                                                accountName: "Tax-Free Saver",
-                                                                balance: 2000.00)
-        let investment2 = AccountSummaryTableViewCell.ViewModel(accountType: .Investment,
-                                                                accountName: "Growth Fund",
-                                                                balance: 15000.00)
-
-        accountCellViewModels.append(savings)
-        accountCellViewModels.append(chequing)
-        accountCellViewModels.append(visa)
-        accountCellViewModels.append(masterCard)
-        accountCellViewModels.append(investment1)
-        accountCellViewModels.append(investment2)
-    }
     
     private func setup() {
         setupTableHeaderView()
@@ -137,7 +111,7 @@ extension AccountSummaryVC {
         fetchProfile(userID: "1") { result in
             switch result {
             case .success(let profile):
-                print("mehmet\(profile)")
+                
                 self.profile = profile
                 self.configureTableHeaderView(profile: profile)
                 self.tableView.reloadData()
@@ -148,7 +122,18 @@ extension AccountSummaryVC {
             }
         }
         
-        fetchAccounts()
+        fetchAccounts(userID: "1") { result in
+            switch result {
+            case.success(let accounts):
+                self.accounts = accounts
+                print("mehmet\(accounts.first)")
+                self.configureTableCells(accounts: accounts)
+                self.tableView.reloadData()
+                
+            case.failure(let error):
+                print(error.localizedDescription)
+            }
+        }
         
     }
     
@@ -157,4 +142,11 @@ extension AccountSummaryVC {
         let vm = AccountSummaryHeaderView.ViewModel(welcomeMessage: "Good morning,", name: profile.firstName, date: Date())
         headerView.configure(viewModel: vm)
     }
+    
+    private func configureTableCells(accounts:[Account]) {
+        accountCellViewModels = accounts.map {
+            AccountSummaryTableViewCell.ViewModel(accountType: $0.type, accountName: $0.name, balance: $0.amount)
+        }
+    }
+    
 }

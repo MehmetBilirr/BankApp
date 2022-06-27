@@ -8,13 +8,15 @@
 import UIKit
 import SnapKit
 
+enum AccountType:String,Codable {
+    case Banking
+    case CreditCard
+    case Investment
+}
+
 class AccountSummaryTableViewCell: UITableViewCell {
     
-    enum AccountType:String {
-        case Banking
-        case CreditCard
-        case Investment
-    }
+    
     enum BalanceType:String {
         
         case currentBalance = "Current Balance"
