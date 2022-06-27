@@ -10,7 +10,21 @@ import SnapKit
 
 class AccountSummaryHeaderView:UIView {
     @IBOutlet var contentView: UIView!
+    @IBOutlet weak var WelcomeLbl: UILabel!
+    @IBOutlet weak var nameLbl: UILabel!
+    @IBOutlet weak var dateLbl: UILabel!
     let shakeyBellView = ShakeyBellView()
+    
+    struct ViewModel {
+        let welcomeMessage:String
+        let name:String
+        let date:Date
+        
+        var dateFormatted : String {
+            return date.monthDayYearString
+        }
+    }
+    
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -55,6 +69,12 @@ class AccountSummaryHeaderView:UIView {
             make.right.equalToSuperview().offset(-5)
             make.bottom.equalToSuperview().offset(-5)
         }
+    }
+    
+    func configure(viewModel:ViewModel) {
+        WelcomeLbl.text = viewModel.welcomeMessage
+        nameLbl.text = viewModel.name
+        dateLbl.text = viewModel.dateFormatted
     }
 }
 

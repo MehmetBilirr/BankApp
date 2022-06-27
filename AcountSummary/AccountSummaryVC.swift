@@ -9,8 +9,12 @@ import UIKit
 import SnapKit
 
 class AccountSummaryVC: UIViewController {
-    var accounts: [AccountSummaryTableViewCell.ViewModel] = []
+    
+    var profile:Profile?
+    var headerViewModel = AccountSummaryHeaderView.ViewModel(welcomeMessage: "Welcome", name: "", date: Date())
+    var accountCellViewModels: [AccountSummaryTableViewCell.ViewModel] = []
     var tableView = UITableView()
+    var headerView = AccountSummaryHeaderView(frame: .zero)
     lazy var logoutBarButtonItem :UIBarButtonItem = {
         let barButtonItem = UIBarButtonItem(title: "Logout", style: .plain, target: self, action: #selector(logoutTapped(_:)))
         barButtonItem.tintColor = .label
@@ -22,6 +26,8 @@ class AccountSummaryVC: UIViewController {
         
         setup()
         setupNavigationBar()
+        
+        
     }
     
     func setupNavigationBar(){
@@ -54,18 +60,19 @@ extension AccountSummaryVC {
                                                                 accountName: "Growth Fund",
                                                                 balance: 15000.00)
 
-        accounts.append(savings)
-        accounts.append(chequing)
-        accounts.append(visa)
-        accounts.append(masterCard)
-        accounts.append(investment1)
-        accounts.append(investment2)
+        accountCellViewModels.append(savings)
+        accountCellViewModels.append(chequing)
+        accountCellViewModels.append(visa)
+        accountCellViewModels.append(masterCard)
+        accountCellViewModels.append(investment1)
+        accountCellViewModels.append(investment2)
     }
     
     private func setup() {
         setupTableHeaderView()
         setupTableView()
-        fetchAccounts()
+        fetchDataAndLoadViews()
+
     }
     
     private func setupTableView(){
@@ -90,24 +97,24 @@ extension AccountSummaryVC {
     }
     
     private func setupTableHeaderView() {
-        let header = AccountSummaryHeaderView(frame: .zero)
         
-        var size = header.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize)
+        
+        var size = headerView.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize)
         size.width = UIScreen.main.bounds.width
-        header.frame.size = size
-        tableView.tableHeaderView = header
+        headerView.frame.size = size
+        tableView.tableHeaderView = headerView
         
     }
 }
 
 extension AccountSummaryVC:UITableViewDelegate,UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return accounts.count
+        return accountCellViewModels.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: AccountSummaryTableViewCell.identifier, for: indexPath) as! AccountSummaryTableViewCell
-        cell.configure(vm: accounts[indexPath.row])
+        cell.configure(vm: accountCellViewModels[indexPath.row])
         return cell
     }
     
@@ -122,4 +129,32 @@ extension AccountSummaryVC {
         
     }
     
+}
+
+extension AccountSummaryVC {
+    private func fetchDataAndLoadViews() {
+        
+        fetchProfile(userID: "1") { result in
+            switch result {
+            case .success(let profile):
+                print("mehmet\(profile)")
+                self.profile = profile
+                self.configureTableHeaderView(profile: profile)
+                self.tableView.reloadData()
+                
+            case.failure(let error):
+                print(error.localizedDescription)
+                
+            }
+        }
+        
+        fetchAccounts()
+        
+    }
+    
+    private func configureTableHeaderView(profile:Profile) {
+        
+        let vm = AccountSummaryHeaderView.ViewModel(welcomeMessage: "Good morning,", name: profile.firstName, date: Date())
+        headerView.configure(viewModel: vm)
+    }
 }

@@ -10,7 +10,10 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="AccountSummaryHeaderView" customModule="BankApp" customModuleProvider="target">
             <connections>
+                <outlet property="WelcomeLbl" destination="luc-Zr-RZz" id="h39-Dj-msf"/>
                 <outlet property="contentView" destination="iN0-l3-epB" id="Gj5-98-w5B"/>
+                <outlet property="dateLbl" destination="Fc1-sn-khC" id="lA1-Rg-VaZ"/>
+                <outlet property="nameLbl" destination="SkC-nY-cUP" id="LUg-MO-HTQ"/>
             </connections>
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
