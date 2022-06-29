@@ -9,13 +9,19 @@ import UIKit
 import SnapKit
 
 class AccountSummaryVC: UIViewController {
-    
+    // Request Models
     var profile:Profile?
     var accounts:[Account] = []
+    var isLoaded = false
+    
+    //View Models
     var headerViewModel = AccountSummaryHeaderView.ViewModel(welcomeMessage: "Welcome", name: "", date: Date())
     var accountCellViewModels: [AccountSummaryTableViewCell.ViewModel] = []
+    
+    //Components
     var tableView = UITableView()
     var headerView = AccountSummaryHeaderView(frame: .zero)
+    let refreshControl = UIRefreshControl()
     lazy var logoutBarButtonItem :UIBarButtonItem = {
         let barButtonItem = UIBarButtonItem(title: "Logout", style: .plain, target: self, action: #selector(logoutTapped(_:)))
         barButtonItem.tintColor = .label
@@ -45,6 +51,7 @@ extension AccountSummaryVC {
         setupTableHeaderView()
         setupTableView()
         fetchData()
+        setupRefreshControl()
 
     }
     
@@ -82,6 +89,12 @@ extension AccountSummaryVC {
     private func setupNavigationBar(){
         navigationItem.rightBarButtonItem = logoutBarButtonItem
     }
+    
+    private func setupRefreshControl() {
+        refreshControl.tintColor = appColor
+        refreshControl.addTarget(self, action: #selector(refreshContent), for: .valueChanged)
+        tableView.refreshControl = refreshControl
+    }
 }
 
 extension AccountSummaryVC:UITableViewDelegate,UITableViewDataSource {
@@ -104,14 +117,15 @@ extension AccountSummaryVC {
     private func fetchData() {
         
         let group = DispatchGroup()
+        let userID = String(Int.random(in: 1..<4))
         
         group.enter()
-        fetchProfile(userID: "1") { result in
+        fetchProfile(userID: userID) { result in
             switch result {
             case .success(let profile):
                 
                 self.profile = profile
-                self.configureTableHeaderView(profile: profile)
+                
                 
                 
             case.failure(let error):
@@ -124,12 +138,12 @@ extension AccountSummaryVC {
         
         
         group.enter()
-        fetchAccounts(userID: "1") { result in
+        fetchAccounts(userID: userID) { result in
             switch result {
             case.success(let accounts):
                 self.accounts = accounts
-                print("mehmet\(accounts.first)")
-                self.configureTableCells(accounts: accounts)
+                
+                
                 
                 
             case.failure(let error):
@@ -139,7 +153,13 @@ extension AccountSummaryVC {
         }
         
         group.notify(queue: .main) {
+            self.tableView.refreshControl?.endRefreshing()
+            guard let profile = self.profile else {return}
+            self.configureTableHeaderView(profile: profile)
+            self.configureTableCells(accounts: self.accounts)
+            self.isLoaded = true
             self.tableView.reloadData()
+            
         }
         
         
@@ -159,13 +179,25 @@ extension AccountSummaryVC {
     
 }
 
-
+// Actions
 extension AccountSummaryVC {
     
     @objc func logoutTapped(_ sender:UIButton) {
         
         NotificationCenter.default.post(name: .logout, object: nil)
         
+    }
+    
+    @objc func refreshContent() {
+        reset()
+        tableView.reloadData()
+        fetchData()
+    }
+    
+    private func reset() {
+        profile = nil
+        accounts = []
+        isLoaded = false
     }
     
 }
