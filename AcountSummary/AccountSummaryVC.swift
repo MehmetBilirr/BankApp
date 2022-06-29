@@ -26,14 +26,12 @@ class AccountSummaryVC: UIViewController {
         super.viewDidLoad()
         
         setup()
-        setupNavigationBar()
+        
         
         
     }
     
-    func setupNavigationBar(){
-        navigationItem.rightBarButtonItem = logoutBarButtonItem
-    }
+    
     
 
 }
@@ -43,9 +41,10 @@ extension AccountSummaryVC {
     
     
     private func setup() {
+        setupNavigationBar()
         setupTableHeaderView()
         setupTableView()
-        fetchDataAndLoadViews()
+        fetchData()
 
     }
     
@@ -79,6 +78,10 @@ extension AccountSummaryVC {
         tableView.tableHeaderView = headerView
         
     }
+    
+    private func setupNavigationBar(){
+        navigationItem.rightBarButtonItem = logoutBarButtonItem
+    }
 }
 
 extension AccountSummaryVC:UITableViewDelegate,UITableViewDataSource {
@@ -95,45 +98,50 @@ extension AccountSummaryVC:UITableViewDelegate,UITableViewDataSource {
     
 }
 
-extension AccountSummaryVC {
-    
-    @objc func logoutTapped(_ sender:UIButton) {
-        
-        NotificationCenter.default.post(name: .logout, object: nil)
-        
-    }
-    
-}
+
 
 extension AccountSummaryVC {
-    private func fetchDataAndLoadViews() {
+    private func fetchData() {
         
+        let group = DispatchGroup()
+        
+        group.enter()
         fetchProfile(userID: "1") { result in
             switch result {
             case .success(let profile):
                 
                 self.profile = profile
                 self.configureTableHeaderView(profile: profile)
-                self.tableView.reloadData()
+                
                 
             case.failure(let error):
                 print(error.localizedDescription)
                 
             }
+            group.leave()
         }
         
+        
+        
+        group.enter()
         fetchAccounts(userID: "1") { result in
             switch result {
             case.success(let accounts):
                 self.accounts = accounts
                 print("mehmet\(accounts.first)")
                 self.configureTableCells(accounts: accounts)
-                self.tableView.reloadData()
+                
                 
             case.failure(let error):
                 print(error.localizedDescription)
             }
+            group.leave()
         }
+        
+        group.notify(queue: .main) {
+            self.tableView.reloadData()
+        }
+        
         
     }
     
@@ -147,6 +155,17 @@ extension AccountSummaryVC {
         accountCellViewModels = accounts.map {
             AccountSummaryTableViewCell.ViewModel(accountType: $0.type, accountName: $0.name, balance: $0.amount)
         }
+    }
+    
+}
+
+
+extension AccountSummaryVC {
+    
+    @objc func logoutTapped(_ sender:UIButton) {
+        
+        NotificationCenter.default.post(name: .logout, object: nil)
+        
     }
     
 }

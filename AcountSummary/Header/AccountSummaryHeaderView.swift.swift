@@ -75,6 +75,7 @@ class AccountSummaryHeaderView:UIView {
         WelcomeLbl.text = viewModel.welcomeMessage
         nameLbl.text = viewModel.name
         dateLbl.text = viewModel.dateFormatted
+        
     }
 }
 
